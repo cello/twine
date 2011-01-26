@@ -1,0 +1,36 @@
+{
+	"name": "twine",
+	"description": "twine is a an application micro-framework for javascript.",
+	"version": "0.0.0alpha",
+	"keywords": ["twine", "application framework", "micro framework"],
+	"maintainers": [
+		{
+			"name": "Ben Hockey",
+			"email": "ben.hockey@cello.com"
+		}
+	],
+	"contributors": [
+		{
+			"name": "Ben Hockey",
+			"email": "ben.hockey@cello.com"
+		}
+	],
+	"bugs": {
+		"web": "https://github.com/neonstalwart/twine/issues"
+	},
+	"licenses": [
+		{
+			"type": "BSD",
+			"url": "https://github.com/neonstalwart/twine/blob/master/LICENSE"
+		}
+	],
+	"repositories": [
+		{
+			"type": "git",
+			"url": "git://github.com/neonstalwart/twine.git"
+		}
+	],
+	"dependencies": {
+		"compose": "0.1.2"
+	}
+}
