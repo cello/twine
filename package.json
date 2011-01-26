@@ -1,7 +1,7 @@
 {
 	"name": "twine",
 	"description": "twine is a an application micro-framework for javascript.",
-	"version": "0.0.0alpha",
+	"version": "0.0.0",
 	"keywords": ["twine", "application framework", "micro framework"],
 	"maintainers": [
 		{
@@ -32,5 +32,8 @@
 	],
 	"dependencies": {
 		"compose": "0.1.2"
+	},
+	"mappings": {
+		"compose": "https://github.com/kriszyp/compose/zipball/v0.1.2"
 	}
 }
