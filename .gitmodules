@@ -1,0 +1,18 @@
+[submodule "support/requirejs"]
+	path = support/requirejs
+	url = https://github.com/jrburke/requirejs.git
+[submodule "support/compose"]
+	path = support/compose
+	url = https://github.com/kriszyp/compose.git
+[submodule "support/uber"]
+	path = support/uber
+	url = https://github.com/kriszyp/uber.js.git
+[submodule "support/patr"]
+	path = support/patr
+	url = https://github.com/kriszyp/patr.git
+[submodule "support/promised-io"]
+	path = support/promised-io
+	url = https://github.com/kriszyp/promised-io.git
+[submodule "support/has.js"]
+	path = support/has.js
+	url = https://github.com/kriszyp/has.js.git
