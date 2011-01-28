@@ -36,9 +36,9 @@ require({
 [
     'patr',
     './Kernel.js'
-], 
+],
 function (patr, Kernel) {
     patr.run({
         testKernel: Kernel
-    });    
+    });
 });
