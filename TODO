@@ -1,2 +1,3 @@
-- implement a way to have a heirarchy of containers
+- consider implementing a way to have a heirarchy of containers.
 - document the code using an appropriate format; maybe jsdoc?
+- build some mock objects to use during testing.  see if this can be automated based on Class.

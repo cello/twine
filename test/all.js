@@ -1,3 +1,11 @@
+/**
+ * @license Copyright (c) 2011 Cello Software, LLC.
+ * All rights reserved.
+ * Available via the new BSD License.
+ */
+/*jslint maxlen: 100, nomen: false, newcap: true, onevar: true, white: true, plusplus: false */
+/*global define: false */
+
 // configure requirejs
 require({
     baseUrl: "../",
@@ -35,10 +43,12 @@ require({
 }, 
 [
     'patr',
-    './Kernel.js'
+    './Twine',
+    './Kernel'
 ],
-function (patr, Kernel) {
+function (patr, Twine, Kernel) {
     patr.run({
+        testTwine: Twine,
         testKernel: Kernel
     });
 });

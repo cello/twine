@@ -1,3 +1,11 @@
+/**
+ * @license Copyright (c) 2011 Cello Software, LLC.
+ * All rights reserved.
+ * Available via the new BSD License.
+ */
+/*jslint maxlen: 100, nomen: false, newcap: true, onevar: true, white: true, plusplus: false */
+/*global define: false */
+
 define(['patr/assert', 'twine/Kernel', 'twine/util/error'], function (assert, Kernel, error) {
     var kernel,
         fiber = {
