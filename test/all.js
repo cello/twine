@@ -8,47 +8,50 @@
 
 // configure requirejs
 require({
-    baseUrl: "../",
-    packages: [
-        {
-            name: "compose",
-            location: "support/compose/lib",
-            lib: ".",
-            main: "compose"
-        },
-        {
-            name: "patr",
-            location: "support/patr/lib",
-            lib: ".",
-            main: "runner"
-        },
-        {
-            name: "twine",
-            location: "lib",
-            lib: ".",
-            main: "Twine"
-        },
-        {
-            name: "promised-io",
-            location: "support/promised-io/lib",
-            lib: "."
-        }
-    ],
-    paths: {
-        promise: "support/promised-io/lib/promise",
-        events: "support/uber/src/events",
-        has: "support/has.js/has",
-        require: "support/requirejs/require"
-    }
+	baseUrl: "../",
+	packages: [
+		{
+			name: "compose",
+			location: "support/compose/lib",
+			lib: ".",
+			main: "compose"
+		},
+		{
+			name: "patr",
+			location: "support/patr/lib",
+			lib: ".",
+			main: "runner"
+		},
+		{
+			name: "twine",
+			location: "lib",
+			lib: ".",
+			main: "Twine"
+		},
+		{
+			name: "promised-io",
+			location: "support/promised-io/lib",
+			lib: "."
+		}
+	],
+	paths: {
+		promise: "support/promised-io/lib/promise",
+		events: "support/uber/src/events",
+		has: "support/has.js/has",
+		require: "support/requirejs/require",
+		test: "test",
+		lang: "support/lang",
+		array: "support/array"
+	}
 }, 
 [
-    'patr',
-    './Twine',
-    './Kernel'
+	'patr',
+	'./Twine',
+	'./Kernel'
 ],
 function (patr, Twine, Kernel) {
-    patr.run({
-        testTwine: Twine,
-        testKernel: Kernel
-    });
+	patr.run({
+		testTwine: Twine,
+		testKernel: Kernel
+	});
 });
