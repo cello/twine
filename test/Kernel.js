@@ -9,6 +9,7 @@
 define(['patr/assert', 'twine/Kernel', 'twine/util/error'], function (assert, Kernel, error) {
     var kernel,
         fiber = {
+            id: 'test',
             init: function () {
                 this.initialized = true;
             },
@@ -30,21 +31,21 @@ define(['patr/assert', 'twine/Kernel', 'twine/util/error'], function (assert, Ke
     return {
         'test fiber is initialized when added': function () {
             setUp();
-            kernel.addFiber('test', fiber);
+            kernel.addFiber(fiber);
             assert.ok(fiber.initialized, 'fiber should be initialized when added to kernel');
         },
         'test fiber is terminated when kernel is destroyed': function () {
             setUp();
-            kernel.addFiber('test', fiber);
+            kernel.addFiber(fiber);
             kernel.destroy();
             assert.ok(fiber.dead, 'fiber should be terminated when kernel is destroyed');
         },
 
         'test fibers cannot be added with duplicate names': function () {
             setUp();
-            kernel.addFiber('dup', fiber);
+            kernel.addFiber(fiber);
             assert.throws(function () {
-                kernel.addFiber('dup', fiber);
+                kernel.addFiber(fiber);
             }, error.FiberAlreadyExists, 'duplicate fibers should throw');
         },
 
@@ -57,7 +58,7 @@ define(['patr/assert', 'twine/Kernel', 'twine/util/error'], function (assert, Ke
                 assert.strictEqual(f, fiber, 'fiber should be passed to fiberAdded event');
             });
 
-            kernel.addFiber('test', fiber);
+            kernel.addFiber(fiber);
             assert.ok(fired, 'kernel should fire a fiberAdded event when a fiber is added');
         }
     };
