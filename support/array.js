@@ -17,8 +17,8 @@ define(function () {
 	// this is not complete and assumes es5.  add more as needed and complete the implementation.
 	['forEach', 'filter', 'map'].forEach(function (method) {
 		ret[method] = function (arr) {
-			var args = slice.call(arr, 1);
-			return arr.apply(arr, args);
+			var args = slice.call(arguments, 1);
+			return arr[method].apply(arr, args);
 		};
 	});
 
