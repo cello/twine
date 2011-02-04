@@ -7,8 +7,9 @@
 /*global define: false */
 
 define(function () {
-	// cache the lookup of toString
-	var toString = Object.prototype.toString;
+	// cache the lookup of some Object.prototype functions
+	var toString = {}.toString,
+		hasOwnProperty = {}.hasOwnProperty;
 
 	return {
 		isString: function (it) {
@@ -16,6 +17,17 @@ define(function () {
 		},
 		isFunction: function (it) {
 			return toString.call(x) === "[object Function]";
+		},
+		keys: function (it) {
+			var keys = [],
+				prop;
+
+			for (prop in it) {
+				if (hasOwnProperty.call(it, prop)) {
+					keys.push(prop);
+				}
+			}
+			return keys;
 		}
 	};
 });
