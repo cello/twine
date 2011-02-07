@@ -11,23 +11,27 @@ define(function () {
 	var toString = {}.toString,
 		hasOwnProperty = {}.hasOwnProperty;
 
+	function keys(it) {
+		var keys = [],
+			prop;
+
+		for (prop in it) {
+			if (hasOwnProperty.call(it, prop)) {
+				keys.push(prop);
+			}
+		}
+		return keys;
+	}
+
+	Object.keys = keys;
+
 	return {
 		isString: function (it) {
 			return (typeof it === 'string' || it instanceof String);
 		},
 		isFunction: function (it) {
-			return toString.call(x) === "[object Function]";
+			return toString.call(it) === "[object Function]";
 		},
-		keys: function (it) {
-			var keys = [],
-				prop;
-
-			for (prop in it) {
-				if (hasOwnProperty.call(it, prop)) {
-					keys.push(prop);
-				}
-			}
-			return keys;
-		}
+		keys: keys
 	};
 });
