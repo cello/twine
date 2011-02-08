@@ -11,6 +11,14 @@ define(function () {
 	var toString = {}.toString,
 		hasOwnProperty = {}.hasOwnProperty;
 
+	function isString(it) {
+		return (typeof it === 'string' || it instanceof String);
+	}
+
+	function isFunction(it) {
+		return toString.call(it) === "[object Function]";
+	}
+
 	function keys(it) {
 		var keys = [],
 			prop;
@@ -22,16 +30,11 @@ define(function () {
 		}
 		return keys;
 	}
-
 	Object.keys = keys;
 
-	return {
-		isString: function (it) {
-			return (typeof it === 'string' || it instanceof String);
-		},
-		isFunction: function (it) {
-			return toString.call(it) === "[object Function]";
-		},
+return {
+		isString: isString,
+		isFunction: isFunction,
 		keys: keys
 	};
 });
