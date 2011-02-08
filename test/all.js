@@ -47,11 +47,15 @@ require({
 [
 	'patr',
 	'./Twine',
-	'./Kernel'
+	'./Kernel',
+	'./message/Processor'
 ],
-function (patr, Twine, Kernel) {
+function (patr, Twine, Kernel, Processor) {
 	patr.run({
 		testTwine: Twine,
-		testKernel: Kernel
+		testKernel: Kernel,
+		testMessage: {
+			testProcessor: Processor
+		}
 	});
 });
