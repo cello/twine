@@ -3,11 +3,15 @@
  * All rights reserved.
  * Available via the new BSD License.
  */
-/*jslint maxlen: 100, nomen: false, newcap: true, onevar: true, white: true, plusplus: false */
-/*global define: false */
+/*jshint
+    bitwise: false, curly: true, eqeqeq: true, forin: true, immed: true, indent: 4, maxlen: 100,
+    newcap: true, noarg: true, noempty: true, onevar: true, passfail: false, undef: true,
+    white: true
+*/
+/*global define: false, require: false */
 
 define(['compose', 'patr/assert', 'twine', 'twine/Kernel'],
-function (Compose, assert, Twine, Kernel) {
+function (compose, assert, Twine, Kernel) {
     function initCalls(obj) {
         obj._calls = {};
         Object.keys(obj).forEach(function (key) {
@@ -36,20 +40,20 @@ function (Compose, assert, Twine, Kernel) {
                 initCalls(this);
             }
         },
-        MockRequire = Compose(function MockRequire() {
-            var original = require;
+        MockRequire = compose(function MockRequire() {
+            var original = require,
+                mock = this;
+
             this.original = function () {
                 return original;
             };
             initCalls(this);
 
-            var mock = this;
-
             require = function () {
                 mock.require.apply(mock, arguments);
             };
         }, {
-            require: function() {
+            require: function () {
                 this._calls.require.push({
                     args: arguments
                 });

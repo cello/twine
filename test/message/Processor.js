@@ -3,15 +3,19 @@
  * All rights reserved.
  * Available via the new BSD License.
  */
-/*jslint maxlen: 100, nomen: false, newcap: true, onevar: true, white: true, plusplus: false */
-/*global define: false */
+/*jshint
+    bitwise: false, curly: true, eqeqeq: true, forin: true, immed: true, indent: 4, maxlen: 100,
+    newcap: true, noarg: true, noempty: true, onevar: true, passfail: false, undef: true,
+    white: true
+*/
+/*global define: false, require: false */
 
 define([
 	'patr/assert',
 	'twine/message/Processor',
 	'lang',
 	'promise'
-], function (assert, Processor, lang, Promise) {
+], function (assert, Processor, lang, promise) {
 	return {
 		'test listeners are called': function () {
 			var l1 = {
@@ -32,7 +36,7 @@ define([
 						foo: 'foo'
 					}
 				},
-				processor = Processor(cache);
+				processor = new Processor(cache);
 
 			return processor.process().then(function () {
 				assert.strictEqual(l1.msg, cache.msg, 'listeners should be passed the message');
@@ -55,7 +59,7 @@ define([
 						processor.proceed();
 					}
 				},
-				processor = Processor({
+				processor = new Processor({
 					interceptors: [i1, i2]
 				});
 
@@ -91,7 +95,7 @@ define([
 					listeners: [listener],
 					msg: 'filled'
 				},
-				processor = Processor(cache);
+				processor = new Processor(cache);
 
 			return processor.process().then(function () {
 				assert.strictEqual(listener.msg, 'filled',
@@ -100,8 +104,8 @@ define([
 				i1.proceed = false;
 				i2.called = false;
 				listener.msg = 'empty';
-				var another = Processor(cache),
-					dfd = Promise.defer();
+				var another = new Processor(cache),
+					dfd = promise.defer();
 
 				another.process().then(function () {
 					assert.ok(false,

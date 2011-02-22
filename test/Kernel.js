@@ -3,8 +3,12 @@
  * All rights reserved.
  * Available via the new BSD License.
  */
-/*jslint maxlen: 100, nomen: false, newcap: true, onevar: true, white: true, plusplus: false */
-/*global define: false */
+/*jshint
+    bitwise: false, curly: true, eqeqeq: true, forin: true, immed: true, indent: 4, maxlen: 100,
+    newcap: true, noarg: true, noempty: true, onevar: true, passfail: false, undef: true,
+    white: true
+*/
+/*global define: false, require: false */
 
 define(['patr/assert', 'twine/Kernel', 'twine/util/error'], function (assert, Kernel, error) {
 	var kernel,
