@@ -40,7 +40,7 @@ require({
 	],
 	paths: {
 		promise: "support/promised-io/lib/promise",
-		events: "support/uber/src/events",
+		listen: "support/uber/lib/listen",
 		has: "support/has.js/has",
 		require: "support/requirejs/require",
 		test: "test",
