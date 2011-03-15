@@ -9,7 +9,7 @@
 define(function () {
 	// cache the lookup of some Object.prototype functions
 	var toString = {}.toString,
-		hasOwnProperty = {}.hasOwnProperty;
+		hasOwn = {}.hasOwnProperty;
 
 	function isString(it) {
 		return (typeof it === 'string' || it instanceof String);
@@ -20,21 +20,38 @@ define(function () {
 	}
 
 	function keys(it) {
-		var keys = [],
+		var out = [],
 			prop;
 
 		for (prop in it) {
-			if (hasOwnProperty.call(it, prop)) {
-				keys.push(prop);
+			if (hasOwn.call(it, prop)) {
+				out.push(prop);
 			}
 		}
-		return keys;
+		return out;
 	}
 	Object.keys = keys;
+
+	function noop() {}
+
+	function hitch(context, func) {
+		if (isString(func)) {
+			func = context[func];
+		}
+		if (func && isFunction(func)) {
+			return function () {
+				return func.apply(context, arguments);
+			};
+		}
+		else {
+			return noop;
+		}
+	}
 
 return {
 		isString: isString,
 		isFunction: isFunction,
-		keys: keys
+		keys: keys,
+		hitch: hitch
 	};
 });
