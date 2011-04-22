@@ -3,7 +3,7 @@
 	url = https://github.com/jrburke/requirejs.git
 [submodule "support/compose"]
 	path = support/compose
-	url = https://github.com/neonstalwart/compose.git 
+	url = https://github.com/kriszyp/compose.git 
 [submodule "support/uber"]
 	path = support/uber
 	url = https://github.com/neonstalwart/uber.js.git
