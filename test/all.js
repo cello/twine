@@ -11,55 +11,17 @@
 /*global define: false, require: false */
 
 // configure requirejs
-require({
-	baseUrl: "../",
-	packages: [
-		{
-			name: "compose",
-			location: "support/compose/lib",
-			lib: ".",
-			main: "compose"
-		},
-		{
-			name: "patr",
-			location: "support/patr/lib",
-			lib: ".",
-			main: "runner"
-		},
-		{
-			name: "twine",
-			location: "lib",
-			lib: ".",
-			main: "Twine"
-		},
-		{
-			name: "promised-io",
-			location: "support/promised-io/lib",
-			lib: "."
-		}
-	],
-	paths: {
-		promise: "support/promised-io/lib/promise",
-		listen: "support/uber/lib/listen",
-		has: "support/has.js/has",
-		require: "support/requirejs/require",
-		test: "test",
-		lang: "support/lang",
-		array: "support/array"
-	}
-}, 
-[
-	'patr',
+define([
 	'./Twine',
 	'./Kernel',
 	'./message/Processor'
 ],
-function (patr, Twine, Kernel, Processor) {
-	patr.run({
+function (Twine, Kernel, Processor) {
+	return {
 		testTwine: Twine,
 		testKernel: Kernel,
 		testMessage: {
 			testProcessor: Processor
 		}
-	});
+	};
 });

@@ -35,5 +35,9 @@
 	},
 	"mappings": {
 		"compose": "https://github.com/kriszyp/compose/zipball/v0.1.2"
-	}
+	},
+	"directories": {
+		"lib": "lib"
+	},
+	"main": "lib/Twine"
 }

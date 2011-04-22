@@ -16,3 +16,6 @@
 [submodule "support/has.js"]
 	path = support/has.js
 	url = https://github.com/kriszyp/has.js.git
+[submodule "support/sinon"]
+	path = support/sinon
+	url = https://github.com/cjohansen/Sinon.JS.git
