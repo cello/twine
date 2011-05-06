@@ -10,19 +10,10 @@
 */
 /*global define: false, require: false */
 
-define(function () {
+define(['dojo/_base/lang'], function (d) {
 	'use strict';
 	// cache the lookup of some Object.prototype functions
-	var toString = {}.toString,
-		hasOwn = {}.hasOwnProperty;
-
-	function isString(it) {
-		return (typeof it === 'string' || it instanceof String);
-	}
-
-	function isFunction(it) {
-		return toString.call(it) === "[object Function]";
-	}
+	var hasOwn = {}.hasOwnProperty;
 
 	function keys(it) {
 		var out = [],
@@ -35,28 +26,11 @@ define(function () {
 		}
 		return out;
 	}
-	Object.keys = keys;
 
-	function noop() {}
-
-	function hitch(context, func) {
-		if (isString(func)) {
-			func = context[func];
-		}
-		if (func && isFunction(func)) {
-			return function () {
-				return func.apply(context, arguments);
-			};
-		}
-		else {
-			return noop;
-		}
-	}
-
-return {
-		isString: isString,
-		isFunction: isFunction,
+	return {
+		isString: d.isString,
+		isFunction: d.isFunction,
 		keys: keys,
-		hitch: hitch
+		hitch: d.hitch
 	};
 });
