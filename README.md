@@ -17,3 +17,4 @@ twine is available on [github](https://github.com/neonstalwart/twine).
 
 ##license
 twine is available under the [new BSD license](https://github.com/neonstalwart/twine/blob/master/LICENSE).
+Copyright (c) 2011, Cello Software, LLC.
