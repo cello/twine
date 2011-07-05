@@ -16,10 +16,10 @@ define([
 	'dojo/on',
 	'../util/error',
 	'lang'
-], function (d, compose, listen, error, lang) {
+], function (d, compose, on, error, lang) {
 	'use strict';
 	return compose(
-		listen.Evented,
+		on.Evented,
 		function Registry() {
 			// this is a map of id -> model
 			this._models = {};
