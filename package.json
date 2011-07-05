@@ -2,7 +2,7 @@
 	"name": "twine",
 	"description": "twine is a an application micro-framework for javascript.",
 	"version": "0.0.0",
-	"keywords": ["twine", "application framework", "micro framework"],
+	"keywords": ["twine", "application framework", "micro framework", "dependency inversion"],
 	"maintainers": [
 		{
 			"name": "Ben Hockey",
@@ -16,18 +16,18 @@
 		}
 	],
 	"bugs": {
-		"web": "https://github.com/neonstalwart/twine/issues"
+		"web": "https://github.com/cello/twine/issues"
 	},
 	"licenses": [
 		{
 			"type": "BSD",
-			"url": "https://github.com/neonstalwart/twine/blob/master/LICENSE"
+			"url": "https://github.com/cello/twine/blob/master/LICENSE"
 		}
 	],
 	"repositories": [
 		{
 			"type": "git",
-			"url": "git://github.com/neonstalwart/twine.git"
+			"url": "git://github.com/cello/twine.git"
 		}
 	],
 	"dependencies": {
@@ -37,7 +37,7 @@
 		"compose": "https://github.com/kriszyp/compose/zipball/v0.1.2"
 	},
 	"directories": {
-		"lib": "lib"
+		"lib": "."
 	},
-	"main": "lib/Twine"
+	"main": "./Twine"
 }
