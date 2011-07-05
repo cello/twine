@@ -1,4 +1,8 @@
 /*
+	this is a modified version to work around https://github.com/kriszyp/compose/issues/7
+*/
+
+/*
  * ComposeJS, object composition for JavaScript, featuring
 * JavaScript-style prototype inheritance and composition, multiple inheritance, 
 * mixin and traits-inspired conflict resolution and composition  
@@ -196,7 +200,6 @@ define([], function(){
 		return this; // this depends on strict mode
 	})();
 	
-	var currentConstructors;
 	function extend(){
 		var args = [this];
 		args.push.apply(args, arguments);
@@ -240,33 +243,33 @@ define([], function(){
 			return instance;
 		}
 		Constructor._register = function(){
-			register(constructors);
+			return register(constructors);
 		};
-		currentConstructors = [];
-		register(arguments);
-		var constructors = currentConstructors, 
+		var constructors = register(arguments),
 			constructorsLength = constructors.length; 
 		Constructor.extend = extend;
 		Constructor.prototype = prototype;
 		return Constructor;
 	};
 	function register(args){
+		var constructors = [];
 		outer: 
 		for(var i = 0; i < args.length; i++){
 			var arg = args[i];
 			if(typeof arg == "function"){
 				if(arg._register){
-					arg._register();
+					constructors.push.apply(constructors, arg._register());
 				}else{
-					for(var j = 0; j < currentConstructors.length; j++){
-						if(arg == currentConstructors[j]){
+					for(var j = 0; j < constructors.length; j++){
+						if(arg == constructors[j]){
 							continue outer;
 						}
 					}
-					currentConstructors.push(arg);
+					constructors.push(arg);
 				}
 			}
 		}
+		return constructors;
 	}
 	// returning the export of the module
 	return Compose;
