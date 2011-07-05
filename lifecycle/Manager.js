@@ -11,8 +11,8 @@
 /*global define: false, require: false */
 
 define([
-	'promise',
-	'compose',
+	'../support/promise',
+	'../support/compose',
 	'./Singleton'
 ], function (promise, compose, Singleton) {
 	'use strict';

@@ -11,13 +11,13 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
-	'lang',
+	'../support/array',
+	'../support/compose',
+	'../support/lang',
 	'./Commissioner',
 	'./Event',
 	'./Router'
-], function (d, compose, lang, Commissioner, Event, Router) {
+], function (arr, compose, lang, Commissioner, Event, Router) {
 	'use strict';
 	return compose(function NavigationFiber() {
 		this._listeners = [];
@@ -67,7 +67,7 @@ define([
 
 		terminate: function () {
 			// stop all the listeners
-			d.forEach(this._listeners, function (listener) {
+			arr.forEach(this._listeners, function (listener) {
 				listener.remove();
 			});
 		}

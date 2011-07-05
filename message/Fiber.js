@@ -11,13 +11,13 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
+	'../support/array',
+	'../support/compose',
 	'./Router',
-	'lang',
+	'../support/lang',
 	'./ListenerProxy',
 	'./InterceptorProxy'
-], function (d, compose, Router, lang, ListenerProxy, InterceptorProxy) {
+], function (arr, compose, Router, lang, ListenerProxy, InterceptorProxy) {
 	'use strict';
 	return compose(function MessageFiber() {
 		this._listeners = [];
@@ -83,7 +83,7 @@ define([
 
 		terminate: function () {
 			// stop all the listeners
-			d.forEach(this._listeners, function (listener) {
+			arr.forEach(this._listeners, function (listener) {
 				listener.remove();
 			});
 		}

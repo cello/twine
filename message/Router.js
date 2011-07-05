@@ -11,10 +11,10 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
+	'../support/array',
+	'../support/compose',
 	'./Processor'
-], function (d, compose, Processor) {
+], function (arr, compose, Processor) {
 	'use strict';
 	return compose(function MessageRouter() {
 		this._messageTypes = [];
@@ -29,7 +29,7 @@ define([
 				msg: msg
 			};
 
-			d.forEach(this._messageTypes, function (type, i) {
+			arr.forEach(this._messageTypes, function (type, i) {
 				// loop over all messageTypes because we use instanceof as a check so that
 				// listeners can receive messages that are subclasses of the type they listen to.
 				var target;
@@ -76,7 +76,7 @@ define([
 			// returns the index of msg in this._messageTypes.
 			// if msg is not found in this._messageTypes, msg is added.
 			var messageTypes = this._messageTypes,
-				index = d.indexOf(messageTypes, msg);
+				index = arr.indexOf(messageTypes, msg);
 
 			if (!~index) {
 				index = messageTypes.length;

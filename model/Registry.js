@@ -11,12 +11,12 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
-	'dojo/on',
+	'../support/array',
+	'../support/compose',
+	'../support/on',
 	'../util/error',
-	'lang'
-], function (d, compose, on, error, lang) {
+	'../support/lang'
+], function (arr, compose, on, error, lang) {
 	'use strict';
 	return compose(
 		on.Evented,
@@ -76,7 +76,7 @@ define([
 				}));
 
 				listeners.push(model.on('componentDeconstructed', function (instance) {
-					var instanceIndex = d.indexOf(instances, instance);
+					var instanceIndex = arr.indexOf(instances, instance);
 					if (~instanceIndex) {
 						instances.splice(instanceIndex, 1);
 						instanceModels.splice(instanceIndex, 1);
@@ -106,7 +106,7 @@ define([
 
 				// if an instance is specified, it wins
 				if (instance) {
-					index = d.indexOf(this._instances, instance);
+					index = arr.indexOf(this._instances, instance);
 					if (~index) {
 						return this._instanceModels[index];
 					}
@@ -129,12 +129,12 @@ define([
 				var models = this._models;
 
 				// destroy all the models
-				d.forEach(lang.keys(models), function (key) {
+				arr.forEach(lang.keys(models), function (key) {
 					models[key].destroy();
 				});
 
 				// stop all the listeners
-				d.forEach(this._listeners, function (listener) {
+				arr.forEach(this._listeners, function (listener) {
 					listener.remove();
 				});
 			}

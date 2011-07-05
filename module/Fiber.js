@@ -11,12 +11,12 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
+	'../support/array',
+	'../support/compose',
 	'../model/Model',
-	'lang',
-	'promise'
-], function (d, compose, Model, lang, promise) {
+	'../support/lang',
+	'../support/promise'
+], function (arr, compose, Model, lang, promise) {
 	'use strict';
 	return compose(function ModuleFiber() {
 		this._listeners = [];
@@ -73,7 +73,7 @@ define([
 
 		terminate: function () {
 			// stop all the listeners
-			d.forEach(this._listeners, function (listener) {
+			arr.forEach(this._listeners, function (listener) {
 				listener.remove();
 			});
 		}

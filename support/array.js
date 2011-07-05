@@ -10,11 +10,7 @@
 */
 /*global define: false, require: false */
 
-define([
-	'../support/compose'
-], function (compose) {
+define(['dojo/_base/array'], function (arr) {
 	'use strict';
-	return compose(function NavigateEvent(target) {
-		this.target = target;
-	});
+	return arr;
 });

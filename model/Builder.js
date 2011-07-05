@@ -11,7 +11,7 @@
 /*global define: false, require: false */
 
 define([
-	'compose',
+	'../support/compose',
 	'./Model',
 	'../lifecycle/Manager'
 ], function (compose, Model, LifecycleManager) {

@@ -11,13 +11,13 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
-	'dojo/on',
-	'promise',
-	'lang',
+	'../support/array',
+	'../support/compose',
+	'../support/on',
+	'../support/promise',
+	'../support/lang',
 	'../util/error'
-], function (d, compose, listen, promise, lang, error) {
+], function (arr, compose, listen, promise, lang, error) {
 	'use strict';
 	return compose(
 		compose,
@@ -108,7 +108,7 @@ define([
 					// if the module is a function then we resolve it as a constructor
 					if (lang.isFunction(module)) {
 						// get the models for all the specified dependencies
-						d.forEach(lang.keys(specs), function (key) {
+						arr.forEach(lang.keys(specs), function (key) {
 							deps[key] = registry.getModel(specs[key]).resolve();
 						});
 

@@ -11,10 +11,10 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
-	'promise'
-], function (d, compose, promise) {
+	'../support/array',
+	'../support/compose',
+	'../support/promise'
+], function (arr, compose, promise) {
 	'use strict';
 	return compose(function Dynamic(model) {
 		this.model = model;
@@ -32,7 +32,7 @@ define([
 
 		release: function (instance) {
 			var instances = this._instances,
-				index = d.indexOf(instances);
+				index = arr.indexOf(instances);
 
 			if (~index) {
 				instances.splice(index, 1);
@@ -40,7 +40,7 @@ define([
 			}
 		},
 		destroy: function () {
-			d.forEach(this._instances, function (instance) {
+			arr.forEach(this._instances, function (instance) {
 				this.release(instance);
 			}, this);
 		}

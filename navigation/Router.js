@@ -11,10 +11,10 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
-	'promise'
-], function (d, compose, promise) {
+	'../support/array',
+	'../support/compose',
+	'../support/promise'
+], function (arr, compose, promise) {
 	'use strict';
 	// this is used as an event listener component
 	return compose(function NavigationRouter() {
@@ -25,7 +25,7 @@ define([
 
 			if (target && target.match) {
 				// allow the routers to process the event before its returned to the navigator
-				return promise.all(d.map(this._routes, function (route) {
+				return promise.all(arr.map(this._routes, function (route) {
 					var args = target.match(route.route);
 
 					if (args) {
@@ -47,7 +47,7 @@ define([
 
 			return {
 				remove: function () {
-					routes.splice(d.indexOf(routes, routeObj), 1);
+					routes.splice(arr.indexOf(routes, routeObj), 1);
 				}
 			};
 		}

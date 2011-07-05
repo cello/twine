@@ -11,9 +11,9 @@
 /*global define: false, require: false */
 
 define([
-	'compose',
-	'promise',
-	'lang'
+	'../support/compose',
+	'../support/promise',
+	'../support/lang'
 ], function (compose, promise, lang) {
 	'use strict';
 	return compose(compose, function MessageProcessor() {

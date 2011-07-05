@@ -10,7 +10,7 @@
 */
 /*global define: false, require: false */
 
-define(['compose'], function (compose) {
+define(['../support/compose'], function (compose) {
 	'use strict';
 	return {
 		DuplicateFiber: compose(Error, function (fiber) {

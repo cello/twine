@@ -10,7 +10,10 @@
 */
 /*global define: false, require: false */
 
-define(['compose', 'promise'], function (compose, promise) {
+define([
+	'../support/compose',
+	'../support/promise'
+], function (compose, promise) {
 	'use strict';
 	return compose(function Singleton(model) {
 		this.model = model;

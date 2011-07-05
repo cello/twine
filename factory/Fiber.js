@@ -11,10 +11,10 @@
 /*global define: false, require: false */
 
 define([
-	'compose',
-	'lang',
-	'promise',
-	'dojo/_base/array'
+	'../support/compose',
+	'../support/lang',
+	'../support/promise',
+	'../support/array'
 ], function (compose, lang, promise, array) {
 	'use strict';
 	return compose(function FactoryFiber() {

@@ -11,14 +11,14 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
+	'./support/array',
+	'./support/compose',
 	'./util/error',
-	'lang',
+	'./support/lang',
 	'./model/Builder',
 	'./model/Registry',
-	'promise'
-], function (d, compose, error, lang, ModelBuilder, ModelRegistry, promise) {
+	'./support/promise'
+], function (arr, compose, error, lang, ModelBuilder, ModelRegistry, promise) {
 	'use strict';
 	// the Kernel Class
 	return compose(
@@ -88,7 +88,7 @@ define([
 			_terminateFibers: function () {
 				var fibers = this._fibers;
 
-				d.forEach(lang.keys(fibers), function (key) {
+				arr.forEach(lang.keys(fibers), function (key) {
 					var fiber = fibers[key];
 					if (fiber.terminate) {
 						fiber.terminate();

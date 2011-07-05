@@ -11,8 +11,8 @@
 /*global define: false, require: false */
 
 define([
-	'compose',
-	'lang'
+	'../support/compose',
+	'../support/lang'
 ], function (compose, lang) {
 	'use strict';
 	// provides a way to lazy load modules that intercept specific events

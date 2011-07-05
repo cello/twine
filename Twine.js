@@ -11,13 +11,13 @@
 /*global define: false, require: false */
 
 define([
-	'dojo/_base/array',
-	'compose',
+	'./support/array',
+	'./support/compose',
 	'./Kernel',
-	'promise',
-	'lang',
+	'./support/promise',
+	'./support/lang',
 	'./util/error'
-], function (d, compose, Kernel, promise, lang, error) {
+], function (arr, compose, Kernel, promise, lang, error) {
 	'use strict';
 	var uid = 0,
 		defer = promise.defer,
@@ -28,7 +28,7 @@ define([
 	}
 
 	function normalizeConfigItems(items) {
-		return d.map(items, function (item) {
+		return arr.map(items, function (item) {
 			// a function is handled as a factory/constructor
 			if (lang.isFunction(item)) {
 				return item(); // NOTE: not called with `new`
@@ -90,7 +90,7 @@ define([
 					seq.push(function () {
 						return promise.when(container._configureFibers(fibers), function (fibers) {
 							// add each fiber to this container
-							return promise.all(d.map(fibers, function (fiber) {
+							return promise.all(arr.map(fibers, function (fiber) {
 								return container.addFiber(fiber);
 							}));
 						});
@@ -104,7 +104,7 @@ define([
 						return promise.when(container._configureInstallers(installers),
 							function (installers) {
 								// install each of the installers
-								return promise.all(d.map(installers, function (installer) {
+								return promise.all(arr.map(installers, function (installer) {
 									return container.install(installer);
 								}));
 							}
@@ -116,7 +116,7 @@ define([
 				if (components && components.length) {
 					// components will be lazy loaded
 					seq.push(function () {
-						return promise.all(d.map(components, function (component) {
+						return promise.all(arr.map(components, function (component) {
 							return container.kernel.addComponentModel(component);
 						}));
 					});
@@ -143,7 +143,7 @@ define([
 					loaded = [];
 
 				// build the list of dependencies to be loaded
-				d.forEach(fibers, function (fiber) {
+				arr.forEach(fibers, function (fiber) {
 					// a string is a reference to a module that needs to be loaded
 					(lang.isString(fiber) ? deps : loaded).push(fiber);
 				});
@@ -172,7 +172,7 @@ define([
 					loaded = [];
 
 				// build the list of dependencies to be loaded
-				d.forEach(installers, function (installer) {
+				arr.forEach(installers, function (installer) {
 					// a string is a reference to a module that needs to be loaded
 					(lang.isString(installer) ? deps : loaded).push(installer);
 				});

@@ -11,8 +11,8 @@
 /*global define: false, require: false */
 
 define([
-	'compose',
-	'lang'
+	'../support/compose',
+	'../support/lang'
 ], function (compose, lang) {
 	'use strict';
 	return compose(function NavigationCommissioner(model, router) {
