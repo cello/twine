@@ -1,11 +1,7 @@
 /*
-	this is a modified version to work around https://github.com/kriszyp/compose/issues/7
-*/
-
-/*
  * ComposeJS, object composition for JavaScript, featuring
-* JavaScript-style prototype inheritance and composition, multiple inheritance, 
-* mixin and traits-inspired conflict resolution and composition  
+* JavaScript-style prototype inheritance and composition, multiple inheritance,
+* mixin and traits-inspired conflict resolution and composition
  */
 "use strict";
 (function(define){
@@ -26,7 +22,7 @@ define([], function(){
 	// this does the work of combining mixins/prototypes
 	function mixin(instance, args, i){
 		// use prototype inheritance for first arg
-		var value, argsLength = args.length; 
+		var value, argsLength = args.length;
 		for(; i < argsLength; i++){
 			var arg = args[i];
 			if(typeof arg == "function"){
@@ -42,7 +38,7 @@ define([], function(){
 						value.install.call(instance, key);
 					}else{
 						instance[key] = value;
-					} 
+					}
 				}
 			}else{
 				// it is an object, copy properties, looking for modifiers
@@ -58,7 +54,7 @@ define([], function(){
 							if(value == required){
 								// required requirement met
 								continue;
-							} 
+							}
 							if(!value.overrides){
 								// add the overrides chain
 								value.overrides = instance[key];
@@ -70,7 +66,7 @@ define([], function(){
 				}
 			}
 		}
-		return instance;	
+		return instance;
 	}
 	// allow for override (by es5 module)
 	Compose._setMixin = function(newMixin){
@@ -80,9 +76,9 @@ define([], function(){
 		if(value == required){
 			// it is a required value, and we have satisfied it
 			return existing;
-		} 
+		}
 		else if(own){
-			// if it is own property, it is considered an explicit override 
+			// if it is own property, it is considered an explicit override
 			if(!value.overrides){
 				// record the override hierarchy
 				value.overrides = instance[key];
@@ -92,7 +88,7 @@ define([], function(){
 			var overriden = value;
 			while((overriden = overriden.overrides) != existing){
 				if(!overriden){
-					// couldn't find existing in the provided value's override chain 
+					// couldn't find existing in the provided value's override chain
 					overriden = existing;
 					while((overriden = overriden.overrides) != value){
 						if(!overriden){
@@ -109,7 +105,7 @@ define([], function(){
 					break;
 				}
 			}
-			
+
 		}
 		return value;
 	}
@@ -124,7 +120,7 @@ define([], function(){
 		return Decorator;
 	}
 	Compose.Decorator = Decorator;
-	// aspect applier 
+	// aspect applier
 	function aspect(handler){
 		return function(advice){
 			return Decorator(function(key){
@@ -162,20 +158,20 @@ define([], function(){
 			return adviceResults === undefined ? results : adviceResults;
 		};
 	});
-	
+
 	// rename Decorator for calling super methods
 	Compose.from = function(trait, fromKey){
 		if(fromKey){
 			return (typeof trait == "function" ? trait.prototype : trait)[fromKey];
 		}
 		return Decorator(function(key){
-			if(!(this[key] = (typeof trait == "string" ? this[trait] : 
+			if(!(this[key] = (typeof trait == "string" ? this[trait] :
 				(typeof trait == "function" ? trait.prototype : trait)[fromKey || key]))){
 				throw new Error("Source method " + fromKey + " was not available to be renamed to " + key);
 			}
 		});
 	};
-	
+
 	// Composes an instance
 	Compose.create = function(base){
 		// create the instance
@@ -199,7 +195,7 @@ define([], function(){
 	var undefinedThis = (function(){
 		return this; // this depends on strict mode
 	})();
-	
+
 	function extend(){
 		var args = [this];
 		args.push.apply(args, arguments);
@@ -209,11 +205,11 @@ define([], function(){
 	function Compose(base){
 		var args = arguments;
 		if(this != undefinedThis){
-			return mixin(this, arguments, 0); // if it is being applied, mixin into |this| 
+			return mixin(this, arguments, 0); // if it is being applied, mixin into |this|
 		}
-		var prototype = (args.length < 2 && typeof args[0] != "function") ? 
-			args[0] : // if there is just a single argument object, just use that as the prototype 
-			mixin(delegate(base), arguments, 1); // normally create a delegate to start with			
+		var prototype = (args.length < 2 && typeof args[0] != "function") ?
+			args[0] : // if there is just a single argument object, just use that as the prototype
+			mixin(delegate(base), arguments, 1); // normally create a delegate to start with
 		function Constructor(){
 			var instance;
 			if(this === undefinedThis){
@@ -242,33 +238,38 @@ define([], function(){
 			}
 			return instance;
 		}
-		Constructor._register = function(){
-			return register(constructors);
+		Constructor._getConstructors = function(){
+			return constructors;
 		};
-		var constructors = register(arguments),
-			constructorsLength = constructors.length; 
+		var constructors = getConstructors(arguments),
+			constructorsLength = constructors.length;
 		Constructor.extend = extend;
 		Constructor.prototype = prototype;
 		return Constructor;
 	};
-	function register(args){
+	function getConstructors(args){
+		// this function registers a set of constructors for a class, eliminating duplicate
+		// constructors that may result from diamond construction for classes (B->A, C->A, D->B&C, then D() should only call A() once)
 		var constructors = [];
-		outer: 
-		for(var i = 0; i < args.length; i++){
-			var arg = args[i];
-			if(typeof arg == "function"){
-				if(arg._register){
-					constructors.push.apply(constructors, arg._register());
-				}else{
-					for(var j = 0; j < constructors.length; j++){
-						if(arg == constructors[j]){
-							continue outer;
+		function iterate(args, checkChildren){
+			outer:
+			for(var i = 0; i < args.length; i++){
+				var arg = args[i];
+				if(typeof arg == "function"){
+					if(checkChildren && arg._getConstructors){
+						iterate(arg._getConstructors()); // don't need to check children for these, this should be pre-flattened
+					}else{
+						for(var j = 0; j < constructors.length; j++){
+							if(arg == constructors[j]){
+								continue outer;
+							}
 						}
+						constructors.push(arg);
 					}
-					constructors.push(arg);
 				}
 			}
 		}
+		iterate(args, true);
 		return constructors;
 	}
 	// returning the export of the module
