@@ -162,17 +162,18 @@ define([
 			addCommissioner: function (commissioner) {
 				// a commissioner can provide 'commission' and/or 'decomission' help
 				var commission = commissioner.commission,
-					decommission = commissioner.decommission;
+					decommission = commissioner.decommission,
+					model = this;
 
 				if (lang.isFunction(commission)) {
-					this._commissions.push(function () {
-						return commission.apply(commissioner, arguments);
+					this._commissions.push(function (instance) {
+						return commission.call(commissioner, instance, model);
 					});
 				}
 
 				if (lang.isFunction(decommission)) {
-					this._decommissions.push(function () {
-						return decommission.apply(commissioner, arguments);
+					this._decommissions.push(function (instance) {
+						return decommission.call(commissioner, instance, model);
 					});
 				}
 			},
