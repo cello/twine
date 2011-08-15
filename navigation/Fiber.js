@@ -14,10 +14,9 @@ define([
 	'../support/array',
 	'../support/compose',
 	'../support/lang',
-	'./Commissioner',
 	'./Event',
 	'./Router'
-], function (arr, compose, lang, Commissioner, Event, Router) {
+], function (arr, compose, lang, Event, Router) {
 	'use strict';
 	return compose(function NavigationFiber() {
 		this._listeners = [];
@@ -48,7 +47,7 @@ define([
 
 				// see if the model claims to be a router
 				if (model.route || model.route === '') {
-					model.addCommissioner(new Commissioner(model, router));
+					model.addCommissioner(fiber);
 				}
 
 				// see if the model would like to be a navigation dispatcher
@@ -63,6 +62,25 @@ define([
 			return this.kernel.resolve('__navigator__').then(function (navigator) {
 				return navigator.dispatch(new Event(target));
 			});
+		},
+
+		commission: function (instance, model) {
+			if (instance) {
+				// add the route for this instance
+				var route = this.router.addRoute(model.route, lang.hitch(instance, 'route')),
+					// create a temp commissioner to decommission the route
+					commission = model.addCommissioner({
+						decommission: function (instance) {
+							// remove this temp commissioner
+							commission.remove();
+							// remove the route
+							route.remove();
+
+							return instance;
+						}
+					});
+			}
+			return instance;
 		},
 
 		terminate: function () {

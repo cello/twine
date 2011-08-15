@@ -21,23 +21,31 @@ define([
 		this._routes = [];
 	}, {
 		execute: function (event) {
-			var target = event.target;
+			var router = this,
+				target = event.target;
 
 			if (target && target.match) {
+				router.lastEvent = event;
 				// allow the routers to process the event before its returned to the navigator
-				return promise.all(arr.map(this._routes, function (route) {
-					var args = target.match(route.route);
-
-					if (args) {
-						args.unshift(event);
-						return route.handler.apply(null, args);
-					}
+				return promise.all(arr.map(router._routes, function (route) {
+					return router._execRoute(route, event, target);
 				}));
 			}
 		},
 
+		_execRoute: function (route, event, target) {
+			var args = target.match(route.route);
+
+			if (args) {
+				args.unshift(event);
+				return route.handler.apply(null, args);
+			}
+		},
+
 		addRoute: function (route, handler) {
-			var routes = this._routes,
+			var router = this,
+				routes = router._routes,
+				lastEvent = router.lastEvent,
 				routeObj = {
 					route: new RegExp(route),
 					handler: handler
@@ -45,9 +53,18 @@ define([
 
 			routes.push(routeObj);
 
+			// let new routes know the current state of things
+			if (lastEvent) {
+				router._execRoute(routeObj, lastEvent, lastEvent.target);
+			}
+
 			return {
 				remove: function () {
-					routes.splice(arr.indexOf(routes, routeObj), 1);
+					var index = arr.indexOf(routes, routeObj);
+
+					if (~index) {
+						routes.splice(index, 1);
+					}
 				}
 			};
 		}

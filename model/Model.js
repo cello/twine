@@ -168,22 +168,45 @@ define([
 				});
 			},
 
-			addCommissioner: function (commissioner) {
+			addCommissioner: function (it) {
 				// a commissioner can provide 'commission' and/or 'decomission' help
-				var commission = commissioner.commission,
-					decommission = commissioner.decommission;
+				var commission = it.commission,
+					decommission = it.decommission,
+					model = this,
+					commissions = model._commissions,
+					decommissions = model._decommissions;
+
+				function commissioner(instance) {
+					return commission.call(it, instance, model);
+				}
+
+				function decommissioner(instance) {
+					return decommission.call(it, instance, model);
+				}
 
 				if (typeof commission === 'function') {
-					this._commissions.push(function () {
-						return commission.apply(commissioner, arguments);
-					});
+					commissions.push(commissioner);
 				}
 
 				if (typeof decommission === 'function') {
-					this._decommissions.push(function () {
-						return decommission.apply(commissioner, arguments);
-					});
+					decommissions.push(decommissioner);
 				}
+
+				return {
+					remove: function () {
+						var index = arr.indexOf(commissions, commissioner);
+
+						if (~index) {
+							commissions.splice(commissioner, 1);
+						}
+
+						index = arr.indexOf(decommissions, decommissioner);
+
+						if (~index) {
+							decommissions.splice(decommissioner, 1);
+						}
+					}
+				};
 			},
 
 			destroy: function () {
