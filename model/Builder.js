@@ -18,13 +18,16 @@ define([
 	'../lifecycle/Manager'
 ], function (compose, Model, LifecycleManager) {
 	'use strict';
-	return compose(function ModelBuilder(kernel) {
+
+	function ModelBuilder(kernel) {
 		this._processors = [];
 		this.kernel = kernel;
 
 		// add the lifecycle manager
 		this.addProcessor(new LifecycleManager());
-	}, {
+	}
+
+	return compose(ModelBuilder, {
 		addProcessor: function (processor) {
 			this._processors.push(processor);
 		},
@@ -35,13 +38,13 @@ define([
 			var model = new Model(config, {
 					kernel: this.kernel
 				}),
-				processors = this._processors.slice(),
-				current = 0;
+				processors = this._processors.slice();
 
 			function next(m) {
 				// allow a processor to replace the model
 				model = m || model;
-				var processor = processors[current++];
+				var processor = processors.shift();
+				// each processor needs to call next() when its done
 				return processor ? processor.process(model, next) || model : model;
 			}
 
