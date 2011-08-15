@@ -4,11 +4,13 @@
  * Available via the new BSD License.
  */
 /*jshint
-	bitwise: false, curly: true, eqeqeq: true, forin: true, immed: true, indent: 4, maxlen: 100,
-	newcap: true, noarg: true, noempty: true, onevar: true, passfail: false, strict: true,
-	undef: true, white: true
+	asi: false, bitwise: false, boss: false, curly: true, eqeqeq: true, eqnull: false, es5: true,
+	evil: false, expr: true, forin: true, globalstrict: false, immed: true, indent: 4, latedef: true,
+	laxbreak: false, loopfunc: true, maxlen: 100, newcap: true, noarg: true, noempty: true,
+	nonew: true, nomen: false, onevar: true, passfail: false, plusplus: false, shadow: false,
+	strict: false, sub: false, trailing: true, undef: true, white: true
 */
-/*global define: false, require: false */
+/*global define: false, require: false*/
 
 define([
 	'../support/array',
@@ -66,6 +68,13 @@ define([
 			// property name -> a model spec as used by registry.getModel(model.deps[key])
 			deps: null,
 
+			// provides a way to load this model.  needs to be provided by config or container.  A
+			// component config can specify a load property OR the config item passed to
+			// container.configure can provide a load property OR a container can be created with
+			// a load property.
+			// this decouples twine from a specific loading mechanism.
+			load: null,
+
 			// returns a promise to resolve a component
 			resolve: function (args) {
 				if (!this.lifecycle) {
@@ -106,7 +115,7 @@ define([
 						deps = {};
 
 					// if the module is a function then we resolve it as a constructor
-					if (lang.isFunction(module)) {
+					if (typeof module === 'function') {
 						// get the models for all the specified dependencies
 						arr.forEach(lang.keys(specs), function (key) {
 							deps[key] = registry.getModel(specs[key]).resolve();
@@ -136,8 +145,8 @@ define([
 					model = this;
 
 				// if module is a string, it needs to be loaded
-				if (lang.isString(model.module)) {
-					require([model.module], function (module) {
+				if (typeof model.module === 'string') {
+					model.load([model.module], function (module) {
 						// short circuit any future calls
 						model.module = module;
 						dfd.resolve(module);
@@ -164,13 +173,13 @@ define([
 				var commission = commissioner.commission,
 					decommission = commissioner.decommission;
 
-				if (lang.isFunction(commission)) {
+				if (typeof commission === 'function') {
 					this._commissions.push(function () {
 						return commission.apply(commissioner, arguments);
 					});
 				}
 
-				if (lang.isFunction(decommission)) {
+				if (typeof decommission === 'function') {
 					this._decommissions.push(function () {
 						return decommission.apply(commissioner, arguments);
 					});

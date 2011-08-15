@@ -4,24 +4,22 @@
  * Available via the new BSD License.
  */
 /*jshint
-	bitwise: false, curly: true, eqeqeq: true, forin: true, immed: true, indent: 4, maxlen: 100,
-	newcap: true, noarg: true, noempty: true, onevar: true, passfail: false, strict: true,
-	undef: true, white: true
+	asi: false, bitwise: false, boss: false, curly: true, eqeqeq: true, eqnull: false, es5: true,
+	evil: false, expr: true, forin: true, globalstrict: false, immed: true, indent: 4, latedef: true,
+	laxbreak: false, loopfunc: true, maxlen: 100, newcap: true, noarg: true, noempty: true,
+	nonew: true, nomen: false, onevar: true, passfail: false, plusplus: false, shadow: false,
+	strict: false, sub: false, trailing: true, undef: true, white: true
 */
-/*global define: false, require: false */
+/*global define: false, require: false*/
 
 define([
 	'./support/array',
 	'./support/compose',
 	'./Kernel',
 	'./support/promise',
-	'./support/lang',
 	'./util/error'
-], function (arr, compose, Kernel, promise, lang, error) {
+], function (arr, compose, Kernel, promise, error) {
 	'use strict';
-	var uid = 0,
-		defer = promise.defer,
-		slice = Array.prototype.slice;
 
 	function getUid() {
 		return 'twine_' + uid++;
@@ -30,7 +28,7 @@ define([
 	function normalizeConfigItems(items) {
 		return arr.map(items, function (item) {
 			// a function is handled as a factory/constructor
-			if (lang.isFunction(item)) {
+			if (typeof item === 'function') {
 				return item(); // NOTE: not called with `new`
 			}
 			return item;
@@ -43,22 +41,39 @@ define([
 		}
 	}
 
+	// when constructor is called, compose has already mixed in the options
+	function Twine() {
+		// ensure the invariants
+		if (!this.name) {
+			// assign an arbitrary name
+			this.name = getUid();
+		}
+		if (!this.kernel) {
+			// create the default kernel
+			this.kernel = new Kernel();
+		}
+		if (!this.load) {
+			this.load = typeof module !== 'undefined' ?
+				// in node, call cb with deps mapped through require
+				function (deps, cb) {
+					cb.apply(this, deps.map(require));
+				}
+				// anywhere else assume AMD require
+				: require;
+		}
+	}
+
+	var uid = 0,
+		defer = promise.defer,
+		when = promise.when,
+		all = promise.all,
+		slice = [].slice;
+
 	// the Twine Class
 	return compose(
-		// use compose as a constructor to mixin options passed to the constructor
+		// use compose as a constructor to mixin options passed to constructor
 		compose,
-		// when this constructor is called, compose has already mixed in the options
-		function Twine() {
-			// ensure the invariants
-			if (!this.name) {
-				// assign an arbitrary name
-				this.name = getUid();
-			}
-			if (!this.kernel) {
-				// create the default kernel
-				this.kernel = new Kernel();
-			}
-		},
+		Twine,
 		{
 			// the container's identifier
 			name: null,
@@ -66,13 +81,16 @@ define([
 			// reference to the kernel instance being used
 			kernel: null,
 
+			// reference to a function to load dependencies
+			load: null,
+
 			// adds another fiber to the twine
 			addFiber: function (fiber) {
 				return this.kernel.addFiber(fiber);
 			},
 
-			// configure this instance based on a config object.  this is likely an asynchronous
-			// operation so a promise is returned.
+			// configure instance based on a config object.  likely an async operation so a promise
+			// is always returned.
 			configure: function (config) {
 				checkDestroyed(this);
 				config = config || {};
@@ -82,15 +100,18 @@ define([
 					container = this,
 					fibers = config.fibers,
 					installers = config.installers,
-					components = config.components;
+					components = config.components,
+					// allow calls to configure to provide their own load function
+					// default to container's load function
+					load = config.load || this.load;
 
 				// if the config has fibers
 				if (fibers && fibers.length) {
-					// configure the fibers and add them to the sequence of promises
+					// configure the fibers and add to the sequence of promises
 					seq.push(function () {
-						return promise.when(container._configureFibers(fibers), function (fibers) {
+						return when(container._configureFibers(fibers), function (fibers) {
 							// add each fiber to this container
-							return promise.all(arr.map(fibers, function (fiber) {
+							return all(arr.map(fibers, function (fiber) {
 								return container.addFiber(fiber);
 							}));
 						});
@@ -101,10 +122,10 @@ define([
 				if (installers && installers.length) {
 					// configure the installers and add them to the sequence of promises
 					seq.push(function () {
-						return promise.when(container._configureInstallers(installers),
+						return when(container._configureInstallers(installers),
 							function (installers) {
 								// install each of the installers
-								return promise.all(arr.map(installers, function (installer) {
+								return all(arr.map(installers, function (installer) {
 									return container.install(installer);
 								}));
 							}
@@ -116,7 +137,12 @@ define([
 				if (components && components.length) {
 					// components will be lazy loaded
 					seq.push(function () {
-						return promise.all(arr.map(components, function (component) {
+						return all(arr.map(components, function (component) {
+							// a component may provide it's own load function
+							if (!component.load) {
+								// default to (config.load || this.load);
+								component.load = load;
+							}
 							return container.kernel.addComponentModel(component);
 						}));
 					});
@@ -145,13 +171,13 @@ define([
 				// build the list of dependencies to be loaded
 				arr.forEach(fibers, function (fiber) {
 					// a string is a reference to a module that needs to be loaded
-					(lang.isString(fiber) ? deps : loaded).push(fiber);
+					(typeof fiber === 'string' ? deps : loaded).push(fiber);
 				});
 
 				// if any dependencies need to be loaded
 				if (deps.length) {
 					// load the modules and then resolve the deferred
-					require(deps, function () {
+					this.load(deps, function () {
 						// NOTE: this changes the order compared to the config
 						dfd.resolve(normalizeConfigItems(loaded.concat(slice.call(arguments))));
 					});
@@ -174,13 +200,13 @@ define([
 				// build the list of dependencies to be loaded
 				arr.forEach(installers, function (installer) {
 					// a string is a reference to a module that needs to be loaded
-					(lang.isString(installer) ? deps : loaded).push(installer);
+					(typeof installer === 'string' ? deps : loaded).push(installer);
 				});
 
 				// if any dependencies need to be loaded
 				if (deps.length) {
 					// load the modules and then resolve the deferred
-					require(deps, function () {
+					this.load(deps, function () {
 						dfd.resolve(normalizeConfigItems(loaded.concat(slice.call(arguments))));
 					});
 				}

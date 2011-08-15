@@ -42,12 +42,12 @@ define([
 				if (model.listen) {
 					// if model.listen is a function then we assume it's a constructor
 					// and we will add a listener for that type
-					if (lang.isFunction(model.listen)) {
+					if (typeof model.listen === 'function') {
 						router.on(model.listen, new ListenerProxy(model));
 					}
 					// if it's a string we assume it's a module id for requirejs
-					else if (lang.isString(model.listen)) {
-						require([model.listen], function (msg) {
+					else if (typeof model.listen === 'string') {
+						model.load([model.listen], function (msg) {
 							router.on(msg, new ListenerProxy(model));
 						});
 					}
@@ -56,12 +56,12 @@ define([
 				if (model.intercept) {
 					// if model.intercept is a function then we assume it's a constructor
 					// and we will add an interceptor for that type
-					if (lang.isFunction(model.intercept)) {
+					if (typeof model.intercept === 'function') {
 						router.intercept(model.intercept, new InterceptorProxy(model));
 					}
 					// if it's a string we assume it's a module id for requirejs
-					else if (lang.isString(model.intercept)) {
-						require([model.intercept], function (msg) {
+					else if (typeof model.intercept === 'string') {
+						model.load([model.intercept], function (msg) {
 							router.intercept(msg, new InterceptorProxy(model));
 						});
 					}

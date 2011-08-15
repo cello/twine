@@ -35,7 +35,7 @@ define([
 
 			if (model.lifestyle) {
 				// asynchronously load the lifestyle
-				require([model.lifestyle], assign);
+				model.load([model.lifestyle], assign);
 			}
 			// Singleton is default
 			else {

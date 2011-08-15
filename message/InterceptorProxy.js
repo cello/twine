@@ -11,9 +11,8 @@
 /*global define: false, require: false */
 
 define([
-	'../support/compose',
-	'../support/lang'
-], function (compose, lang) {
+	'../support/compose'
+], function (compose) {
 	'use strict';
 	// provides a way to lazy load modules that intercept specific events
 	return compose(function InterceptorProxy(model) {
@@ -26,7 +25,7 @@ define([
 			return model.resolve().then(function (component) {
 				var ret;
 
-				if (component && lang.isFunction(component.intercept)) {
+				if (component && typeof component.intercept === 'function') {
 					ret = component.intercept.apply(component, args);
 				}
 				model.release(component);

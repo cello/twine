@@ -91,7 +91,7 @@ define([
 
 			getModel: function (spec) {
 				// assume that a string is a request for an id
-				if (lang.isString(spec)) {
+				if (typeof spec === 'string') {
 					spec = {
 						id: spec
 					};

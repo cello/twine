@@ -14,9 +14,8 @@ define([
 	'../support/array',
 	'../support/compose',
 	'../model/Model',
-	'../support/lang',
 	'../support/promise'
-], function (arr, compose, Model, lang, promise) {
+], function (arr, compose, Model, promise) {
 	'use strict';
 	return compose(function ModuleFiber() {
 		this._listeners = [];

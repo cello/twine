@@ -12,9 +12,8 @@
 
 define([
 	'../support/compose',
-	'../support/lang',
 	'../support/promise'
-], function (compose, lang, promise) {
+], function (compose, promise) {
 	'use strict';
 	// provides a way to lazy load modules that listen to certain events
 	return compose(function ListenerProxy(model) {
@@ -29,11 +28,12 @@ define([
 				proxy.component = component;
 				var ret;
 
-				if (component && lang.isFunction(component.execute)) {
+				if (component && typeof component.execute === 'function') {
 					ret = component.execute.apply(component, args);
 				}
 
-				if (!lang.isFunction(component.error) && !lang.isFunction(component.results)) {
+				if (typeof component.error !== 'function' &&
+						typeof component.results !== 'function') {
 					model.release(component);
 				}
 
@@ -44,7 +44,7 @@ define([
 			var component = this.component,
 				ret = data;
 
-			if (component && lang.isFunction(component.results)) {
+			if (component && typeof component.results === 'function') {
 				ret = component.results.apply(component, arguments);
 				this.model.release(component);
 			}
@@ -56,7 +56,7 @@ define([
 			var component = this.component,
 				ret = error;
 
-			if (component && lang.isFunction(component.error)) {
+			if (component && typeof component.error === 'function') {
 				ret = component.error.apply(component, arguments);
 				this.model.release(component);
 			}
