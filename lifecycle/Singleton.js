@@ -17,9 +17,12 @@ define([
 	'../support/promise'
 ], function (compose, promise) {
 	'use strict';
-	return compose(function Singleton(model) {
+
+	function Singleton(model) {
 		this.model = model;
-	}, {
+	}
+
+	return compose(Singleton, {
 		_released: true,
 
 		resolve: function (args) {
