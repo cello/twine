@@ -20,10 +20,13 @@ define([
 	'./Router'
 ], function (arr, compose, lang, Event, Router) {
 	'use strict';
-	return compose(function NavigationFiber() {
+
+	function NavigationFiber() {
 		this._listeners = [];
 		this.router = new Router();
-	}, {
+	}
+
+	return compose(NavigationFiber, {
 		id: 'Navigation Fiber',
 
 		init: function (kernel) {
