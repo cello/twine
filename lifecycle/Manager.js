@@ -18,11 +18,11 @@ define([
 	'./Singleton'
 ], function (promise, compose, Singleton) {
 	'use strict';
-	return compose(function LifecycleManager() {
-	}, {
-		process: function (model, next) {
-			var dfd = promise.defer();
 
+	function LifecycleManager() {}
+
+	return compose(LifecycleManager, {
+		process: function (model, next) {
 			function assign(Lifecycle) {
 				var lifecycle = new Lifecycle(model);
 
@@ -34,6 +34,8 @@ define([
 					dfd.resolve(model);
 				});
 			}
+
+			var dfd = promise.defer();
 
 			if (model.lifestyle) {
 				// asynchronously load the lifestyle
