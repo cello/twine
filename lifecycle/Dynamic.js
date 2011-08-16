@@ -18,10 +18,13 @@ define([
 	'../support/promise'
 ], function (arr, compose, promise) {
 	'use strict';
-	return compose(function Dynamic(model) {
+
+	function Dynamic(model) {
 		this.model = model;
 		this._instances = [];
-	}, {
+	}
+
+	return compose(Dynamic, {
 		resolve: function (args) {
 			var instances = this._instances;
 
@@ -34,7 +37,7 @@ define([
 
 		release: function (instance) {
 			var instances = this._instances,
-				index = arr.indexOf(instances);
+				index = arr.indexOf(instances, instance);
 
 			if (~index) {
 				instances.splice(index, 1);
