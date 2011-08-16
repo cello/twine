@@ -7,35 +7,3 @@
 	lazy loads modules may want to be able to specify a new layer in the build for
 	the component that is lazy loaded.  this may need to be done per loader to account
 	for differences/features in various loaders.
-- consider a way to provide a context-aware require via config.
-	this will allow relative references for module ids.  example usage:
-	define(['twine', 'require'], function (Twine, require) {
-		var container = new Twine();
-		container.configure({
-			require: require
-			installers: [
-				'./installer'
-			]
-		});
-	});
-
-	// ./installer
-	define(['require'], function (require) {
-		return {
-			install: function (container) {
-				return conatiner.configure({
-					fibers: [
-						'twine/message/Fiber',
-						'./fibers/xyz'
-					],
-					require: require,
-					components: [
-						{
-							id: 'foo',
-							module: './foo'
-						}
-					]
-				});
-			}
-		};
-	});
