@@ -19,9 +19,10 @@ define([
 	'../support/array'
 ], function (compose, lang, promise, array) {
 	'use strict';
-	return compose(function FactoryFiber() {
-		this._listeners = [];
-	}, {
+
+	function FactoryFiber() {}
+
+	return compose(FactoryFiber, {
 		id: 'Factory Fiber',
 
 		init: function (kernel) {
@@ -46,14 +47,10 @@ define([
 					});
 					model.module = module;
 				}
+				return model;
 			});
 		},
 
-		terminate: function () {
-			// stop all the listeners
-			array.forEach(this._listeners, function (listener) {
-				listener.remove();
-			});
-		}
+		terminate: function () {}
 	});
 });
