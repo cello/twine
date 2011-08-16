@@ -12,11 +12,9 @@
 */
 /*global define: false, require: false*/
 
-define([
-	'../support/compose'
-], function (compose) {
+define([], function () {
 	'use strict';
-	return compose(function NavigateEvent(target) {
+	return function NavigateEvent(target) {
 		this.target = target;
-	});
+	};
 });

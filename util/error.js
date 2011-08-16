@@ -14,35 +14,43 @@
 
 define(['../support/compose'], function (compose) {
 	'use strict';
+
+	function DuplicateFiber(fiber) {
+		this.message = 'Fiber with id "' + fiber.id + '" was already added.';
+		this.fiber = fiber;
+	}
+
+	function MissingId(it) {
+		this.target = it;
+		this.message = 'ID is missing.';
+	}
+
+	function MissingLifecycle(model) {
+		this.model = model;
+		this.message = 'Model with id "' + model.id + '" needs a lifecycle.';
+	}
+
+	function ContainerDestroyed(container) {
+		this.message = 'Container "' + container.name + ' has been destroyed.';
+	}
+
+	function DuplicateModel(model) {
+		this.message = 'Model with id "' + model.id + '" already exists.';
+		this.model = model;
+	}
+
+	function DuplicateServiceModel(model) {
+		this.message = 'Model for service "' + model.service + '" with name "' + model.name +
+			'" already exists.';
+		this.model = model;
+	}
+
 	return {
-		DuplicateFiber: compose(Error, function (fiber) {
-			this.message = 'Fiber with id "' + fiber.id + '" was already added.';
-			this.fiber = fiber;
-		}),
-
-		MissingId: compose(Error, function (it) {
-			this.target = it;
-			this.message = 'ID is missing.';
-		}),
-
-		MissingLifecycle: compose(Error, function (model) {
-			this.model = model;
-			this.message = 'Model with id "' + model.id + '" needs a lifecycle.';
-		}),
-
-		ContainerDestroyed: compose(Error, function (container) {
-			this.message = 'Container "' + container.name + ' has been destroyed.';
-		}),
-
-		DuplicateModel: compose(Error, function (model) {
-			this.message = 'Model with id "' + model.id + '" already exists.';
-			this.model = model;
-		}),
-
-		DuplicateServiceModel: compose(Error, function (model) {
-			this.message = 'Model for service "' + model.service + '" with name "' + model.name +
-				'" already exists.';
-			this.model = model;
-		})
+		DuplicateFiber: compose(Error, DuplicateFiber),
+		MissingId: compose(Error, MissingId),
+		MissingLifecycle: compose(Error, MissingLifecycle),
+		ContainerDestroyed: compose(Error, ContainerDestroyed),
+		DuplicateModel: compose(Error, DuplicateModel),
+		DuplicateServiceModel: compose(Error, DuplicateServiceModel)
 	};
 });
