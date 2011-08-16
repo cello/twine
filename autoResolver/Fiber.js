@@ -17,9 +17,12 @@ define([
 	'../support/compose'
 ], function (arr, compose) {
 	'use strict';
-	return compose(function AutoResolver() {
+
+	function AutoResolver() {
 		this._listeners = [];
-	}, {
+	}
+
+	return compose(AutoResolver, {
 		id: 'Auto Resolver Fiber',
 
 		init: function (kernel) {
