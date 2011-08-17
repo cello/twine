@@ -18,23 +18,29 @@ define([
 	'./Router',
 	'../support/lang',
 	'./ListenerProxy',
-	'./InterceptorProxy'
-], function (arr, compose, Router, lang, ListenerProxy, InterceptorProxy) {
+	'./InterceptorProxy',
+	'../support/on'
+], function (arr, compose, Router, lang, ListenerProxy, InterceptorProxy, on) {
 	'use strict';
-	return compose(function MessageFiber() {
+
+	function MessageFiber() {
 		this._listeners = [];
 		this.router = new Router();
-	}, {
+	}
+
+	return compose(MessageFiber, {
 		id: 'Messaging Fiber',
 
 		init: function (kernel) {
-			var router = this.router;
+			var fiber = this,
+				router = fiber.router;
 
-			this._listeners.push(kernel.modelRegistry.on('modelAdded', function (model) {
+			fiber._listeners.push(kernel.modelRegistry.on('modelAdded', function (model) {
 				var dispatcher = {},
 					// dispatch can be set to true and default to 'dispatch' property,
 					// or the name of an alternative property can be provided
-					dispatchProp = model.dispatch === true ? 'dispatch' : model.dispatch;
+					dispatchProp = model.dispatch === true ? 'dispatch' : model.dispatch,
+					pubs = {};
 
 				if (dispatchProp) {
 					dispatcher[dispatchProp] = lang.hitch(router, 'dispatch');
@@ -69,18 +75,47 @@ define([
 					}
 				}
 
-				// TODO: add pub/sub using uber/listen listener - maybe...
-				/* - look in the model
-				{
-					publish: {
-						functionName: 'topic/to/publish'
-					},
-					subscribe: {
-						functionName: 'topic/to/subscribe'
-					}
+				if (model.publish) {
+					//	publish: {
+					//		functionName: 'topic/to/publish'
+					//	}
+					arr.forEach(lang.keys(model.publish), function (prop) {
+						var topic = 'on' + model.publish[prop];
+						pubs[prop] = function () {
+							var listeners = on[topic];
+							if (listeners) {
+								listeners.apply(this, arguments);
+							}
+						};
+					});
+					model.addMixin(pubs);
 				}
-				*/
+
+				if (model.subscribe) {
+					//	subscribe: {
+					//		functionName: 'topic/to/subscribe'
+					//	}
+					model.addCommissioner(fiber);
+				}
 			}));
+		},
+
+		commission: function (instance, model) {
+			if (instance) {
+				var subs = arr.map(lang.keys(model.subscribe), function (prop) {
+						var topic = model.subscribe[prop];
+						return on(topic, instance[prop]);
+					}),
+					commissioner = model.addCommissioner({
+						decommission: function (instance) {
+							commissioner.remove();
+							while (subs.length) {
+								subs.shift().remove();
+							}
+						}
+					});
+			}
+			return instance;
 		},
 
 		terminate: function () {
