@@ -18,12 +18,15 @@ define([
 	'../support/lang'
 ], function (compose, promise, lang) {
 	'use strict';
-	return compose(compose, function MessageProcessor() {
+
+	function MessageProcessor() {
 		this.interceptors = this.interceptors || [];
 		this.listeners = this.listeners || [];
 		this.msg = this.msg || '';
 		this._interceptor = this._listener = 0;
-	}, {
+	}
+
+	return compose(compose, MessageProcessor, {
 
 		process: function () {
 			// process should only be called the first time.

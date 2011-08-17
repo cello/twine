@@ -18,10 +18,13 @@ define([
 	'./Processor'
 ], function (arr, compose, Processor) {
 	'use strict';
-	return compose(function MessageRouter() {
+
+	function MessageRouter() {
 		this._messageTypes = [];
 		this._targets = [];
-	}, {
+	}
+
+	return compose(MessageRouter, {
 		dispatch: function (msg) {
 			// creates a Processor to process the dispatched message.  returns a promise that is
 			// resolved when the message has been processed.
@@ -47,14 +50,34 @@ define([
 
 		intercept: function (msg, interceptor) {
 			// an interceptor has an intercept function
-			// XXX: need to return a handle to stop intercepting
-			this._getTarget(msg).interceptors.unshift(interceptor);
+			var interceptors = this._getTarget(msg).interceptors;
+
+			interceptors.unshift(interceptor);
+			return {
+				remove: function () {
+					var index = arr.indexOf(interceptors, interceptor);
+
+					if (~index) {
+						interceptors.splice(index, 1);
+					}
+				}
+			};
 		},
 
 		on: function (msg, listener) {
 			// a listener has an execute function and optional results and error functions
-			// XXX: need to return a handle to stop listening
-			this._getTarget(msg).listeners.push(listener);
+			var listeners = this._getTarget(msg).listeners;
+
+			listeners.push(listener);
+			return {
+				remove: function () {
+					var index = arr.indexOf(listeners, listener);
+
+					if (~index) {
+						listeners.splice(index, 1);
+					}
+				}
+			};
 		},
 
 		_getTarget: function (msg) {
