@@ -85,8 +85,10 @@ define([
 
 			// resolving might be asynchronous
 			return promise.whenPromise(this.lifecycle.resolve(args), function (component) {
-				model.emit('componentResolved', component);
-				return component;
+				return promise.when(model.commission(component), function (component) {
+					model.emit('componentResolved', component);
+					return component;
+				});
 			});
 		},
 
@@ -97,8 +99,10 @@ define([
 			}
 
 			// releasing must be synchronous
+			this.decommission(instance);
 			this.lifecycle.release(instance);
 			this.emit('componentReleased', instance);
+			return instance;
 		},
 
 		addMixin: function (obj) {
@@ -127,10 +131,8 @@ define([
 						var Ctor = compose(module, deps, model.mixin, args),
 							inst = new Ctor();
 							//inst = compose.create(compose, module, deps, model.mixin, args);
-						return promise.seq(model._commissions, inst).then(function (instance) {
-							model.emit('componentConstructed', instance);
-							return instance;
-						});
+						model.emit('componentConstructed', inst);
+						return inst;
 					});
 				}
 
@@ -161,12 +163,8 @@ define([
 		},
 
 		deconstruct: function (instance) {
-			var model = this;
-
-			return promise.seq(model._decommissions, instance).then(function (instance) {
-				model.emit('componentDeconstructed', instance);
-				return instance;
-			});
+			this.emit('componentDeconstructed', instance);
+			return instance;
 		},
 
 		addCommissioner: function (it) {
@@ -206,6 +204,25 @@ define([
 					}
 				}
 			};
+		},
+
+		commission: function (inst) {
+			// commission may be asynchronous
+			var model = this;
+			return promise.seq(model._commissions, inst).then(function (instance) {
+				model.emit('componentCommissioned', instance);
+				return instance;
+			});
+		},
+
+		decommission: function (inst) {
+			// decommission is synchronous
+			var model = this;
+			arr.forEach(model._decommissions, function (decommission) {
+				decommission(inst, model);
+			});
+			model.emit('componentDecommissioned', inst);
+			return inst;
 		},
 
 		destroy: function () {
