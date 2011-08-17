@@ -30,6 +30,11 @@ define(['../support/compose'], function (compose) {
 		this.message = 'Model with id "' + model.id + '" needs a lifecycle.';
 	}
 
+	function MissingHandler(route) {
+		this.route = route;
+		this.message = 'Missing/Invalid handler function for route - ' + route;
+	}
+
 	function ContainerDestroyed(container) {
 		this.message = 'Container "' + container.name + ' has been destroyed.';
 	}
@@ -49,6 +54,7 @@ define(['../support/compose'], function (compose) {
 		DuplicateFiber: compose(Error, DuplicateFiber),
 		MissingId: compose(Error, MissingId),
 		MissingLifecycle: compose(Error, MissingLifecycle),
+		MissingHandler: compose(Error, MissingHandler),
 		ContainerDestroyed: compose(Error, ContainerDestroyed),
 		DuplicateModel: compose(Error, DuplicateModel),
 		DuplicateServiceModel: compose(Error, DuplicateServiceModel)

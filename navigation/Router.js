@@ -15,13 +15,17 @@
 define([
 	'../support/array',
 	'../support/compose',
-	'../support/promise'
-], function (arr, compose, promise) {
+	'../support/promise',
+	'../util/error'
+], function (arr, compose, promise, error) {
 	'use strict';
+
 	// this is used as an event listener component
-	return compose(function NavigationRouter() {
+	function NavigationRouter() {
 		this._routes = [];
-	}, {
+	}
+
+	return compose(NavigationRouter, {
 		execute: function (event) {
 			var router = this,
 				target = event.target;
@@ -40,11 +44,15 @@ define([
 
 			if (args) {
 				args.unshift(event);
-				return route.handler.apply(null, args);
+				return route.handler.apply(null, args) || event;
 			}
 		},
 
 		addRoute: function (route, handler) {
+			if (typeof handler !== 'function') {
+				throw new error.MissingHandler(route);
+			}
+
 			var router = this,
 				routes = router._routes,
 				lastEvent = router.lastEvent,
