@@ -17,10 +17,13 @@ define([
 	'../support/promise'
 ], function (compose, promise) {
 	'use strict';
+
 	// provides a way to lazy load modules that listen to certain events
-	return compose(function ListenerProxy(model) {
+	function ListenerProxy(model) {
 		this.model = model;
-	}, {
+	}
+
+	return compose(ListenerProxy, {
 		execute: function () {
 			var args = arguments,
 				model = this.model,
