@@ -16,10 +16,13 @@ define([
 	'../support/compose'
 ], function (compose) {
 	'use strict';
+
 	// provides a way to lazy load modules that intercept specific events
-	return compose(function InterceptorProxy(model) {
+	function InterceptorProxy(model) {
 		this.model = model;
-	}, {
+	}
+
+	return compose(InterceptorProxy, {
 		intercept: function () {
 			var args = arguments,
 				model = this.model;
