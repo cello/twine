@@ -19,9 +19,13 @@ define([
 	'../support/promise'
 ], function (arr, compose, Model, promise) {
 	'use strict';
-	return compose(function ModuleFiber() {
+
+	// XXX: in practice i've been using factories for lazy loading.  maybe remove this feature.
+	function ModuleFiber() {
 		this._listeners = [];
-	}, {
+	}
+
+	return compose(ModuleFiber, {
 		id: 'Module Fiber',
 
 		init: function (kernel) {
