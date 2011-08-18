@@ -109,7 +109,7 @@ define([
 				if (fibers && fibers.length) {
 					// configure the fibers and add to the sequence of promises
 					seq.push(function () {
-						return when(container._configureFibers(fibers), function (fibers) {
+						return when(container._configureFibers(fibers, load), function (fibers) {
 							// add each fiber to this container
 							return all(arr.map(fibers, function (fiber) {
 								return container.addFiber(fiber);
@@ -122,7 +122,7 @@ define([
 				if (installers && installers.length) {
 					// configure the installers and add them to the sequence of promises
 					seq.push(function () {
-						return when(container._configureInstallers(installers),
+						return when(container._configureInstallers(installers, load),
 							function (installers) {
 								// install each of the installers
 								return all(arr.map(installers, function (installer) {
@@ -161,8 +161,9 @@ define([
 			//  - a string, considered as a module id to be loaded and then considered again
 			//  - a function, it will be considered a factory and executed
 			//  - anything else, assumed to be an instance of a fiber
-			_configureFibers: function (fibers) {
+			_configureFibers: function (fibers, load) {
 				fibers = fibers || [];
+				load = load || this.load;
 
 				var dfd = defer(),
 					deps = [],
@@ -177,7 +178,7 @@ define([
 				// if any dependencies need to be loaded
 				if (deps.length) {
 					// load the modules and then resolve the deferred
-					this.load(deps, function () {
+					load(deps, function () {
 						// NOTE: this changes the order compared to the config
 						dfd.resolve(normalizeConfigItems(loaded.concat(slice.call(arguments))));
 					});
@@ -190,8 +191,9 @@ define([
 			},
 
 			// installers can be provided in the same way as fibers
-			_configureInstallers: function (installers) {
+			_configureInstallers: function (installers, load) {
 				installers = installers || [];
+				load = load || this.load;
 
 				var dfd = defer(),
 					deps = [],
@@ -206,7 +208,7 @@ define([
 				// if any dependencies need to be loaded
 				if (deps.length) {
 					// load the modules and then resolve the deferred
-					this.load(deps, function () {
+					load(deps, function () {
 						dfd.resolve(normalizeConfigItems(loaded.concat(slice.call(arguments))));
 					});
 				}
