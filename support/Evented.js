@@ -12,7 +12,7 @@
 */
 /*global define: false, require: false*/
 
-define(['dojo/on'], function (on) {
+define(['dojo/Evented'], function (Evented) {
 	'use strict';
-	return on;
+	return Evented;
 });

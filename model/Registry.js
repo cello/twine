@@ -15,10 +15,10 @@
 define([
 	'../support/array',
 	'../support/compose',
-	'../support/on',
+	'../support/Evented',
 	'../util/error',
 	'../support/lang'
-], function (arr, compose, on, error, lang) {
+], function (arr, compose, Evented, error, lang) {
 	'use strict';
 
 	function Registry() {
@@ -36,7 +36,7 @@ define([
 		this._listeners = [];
 	}
 
-	return compose(on.Evented, Registry, {
+	return compose(Evented, Registry, {
 		addModel: function (model) {
 			var services = this._services,
 				models = this._models,

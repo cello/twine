@@ -15,11 +15,11 @@
 define([
 	'../support/array',
 	'../support/compose',
-	'../support/on',
+	'../support/Evented',
 	'../support/promise',
 	'../support/lang',
 	'../util/error'
-], function (arr, compose, listen, promise, lang, error) {
+], function (arr, compose, Evented, promise, lang, error) {
 	'use strict';
 
 	function Model(config) {
@@ -44,7 +44,7 @@ define([
 		}
 	}
 
-	return compose(compose, listen.Evented, Model, {
+	return compose(compose, Evented, Model, {
 		// id must be unique per registry
 		id: '',
 

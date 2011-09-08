@@ -19,9 +19,11 @@ define([
 	'../support/lang',
 	'./ListenerProxy',
 	'./InterceptorProxy',
-	'../support/on'
-], function (arr, compose, Router, lang, ListenerProxy, InterceptorProxy, on) {
+	'../support/Evented'
+], function (arr, compose, Router, lang, ListenerProxy, InterceptorProxy, Evented) {
 	'use strict';
+
+	var hub = new Evented();
 
 	function MessageFiber() {
 		this._listeners = [];
@@ -80,12 +82,11 @@ define([
 					//		functionName: 'topic/to/publish'
 					//	}
 					arr.forEach(lang.keys(model.publish), function (prop) {
-						var topic = 'on' + model.publish[prop];
+						var topic = model.publish[prop];
 						pubs[prop] = function () {
-							var listeners = on[topic];
-							if (listeners) {
-								listeners.apply(this, arguments);
-							}
+							var args = [topic];
+							args.push.apply(args, arguments);
+							hub.emit.apply(hub, args);
 						};
 					});
 					model.addMixin(pubs);
@@ -104,7 +105,7 @@ define([
 			if (instance) {
 				var subs = arr.map(lang.keys(model.subscribe), function (prop) {
 						var topic = model.subscribe[prop];
-						return on(topic, instance[prop]);
+						return hub.on(topic, instance[prop]);
 					}),
 					commissioner = model.addCommissioner({
 						decommission: function (instance) {
