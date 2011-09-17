@@ -66,7 +66,8 @@ define([
 									return model.resolve(args);
 								});
 							}
-						}
+						},
+						load: model.load
 					};
 					return kernel.modelBuilder.process(managerModel);
 				}
