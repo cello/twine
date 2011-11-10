@@ -218,7 +218,7 @@ define([
 		decommission: function (inst) {
 			// decommission is synchronous
 			var model = this;
-			arr.forEach(model._decommissions, function (decommission) {
+			arr.forEach(model._decommissions.slice(), function (decommission) {
 				decommission(inst, model);
 			});
 			model.emit('componentDecommissioned', inst);
