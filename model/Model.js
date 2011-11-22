@@ -128,9 +128,8 @@ define([
 
 					// resolve all the dependencies and then construct an instance
 					return promise.allKeys(deps).then(function (deps) {
-						var Ctor = compose(module, deps, model.mixin, args),
-							inst = new Ctor();
-							//inst = compose.create(compose, module, deps, model.mixin, args);
+						var Ctor = compose(module, deps, model.mixin),
+							inst = new Ctor(args);
 						model.emit('componentConstructed', inst);
 						return inst;
 					});
