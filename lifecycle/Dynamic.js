@@ -26,12 +26,15 @@ define([
 
 	return compose(Dynamic, {
 		resolve: function (args) {
-			var instances = this._instances;
+			var instances = this._instances,
+				model = this.model;
 
 			// always construct a new instance
 			return promise.when(this.model.construct(args), function (instance) {
-				instances.push(instance);
-				return instance;
+				return promise.when(model.commission(instance), function (instance) {
+					instances.push(instance);
+					return instance;
+				});
 			});
 		},
 
@@ -41,6 +44,7 @@ define([
 
 			if (~index) {
 				instances.splice(index, 1);
+				this.model.decommission(instance);
 				this.model.deconstruct(instance);
 			}
 		},

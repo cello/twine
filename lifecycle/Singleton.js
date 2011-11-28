@@ -27,19 +27,26 @@ define([
 
 		resolve: function (args) {
 			var lStyle = this,
-				inst = lStyle._instance = lStyle._instance || lStyle.model.construct(args);
+				inst = lStyle._instance = lStyle._instance || lStyle.model.construct(args),
+				model = this.model,
+				wasReleased = lStyle._released;
 
 			lStyle._released = false;
 
 			// reuse a single instance
 			return promise.when(inst, function (instance) {
 				lStyle._instance = instance;
+				// only commission instances that were released
+				if (wasReleased) {
+					return model.commission(instance);
+				}
 				return instance;
 			});
 		},
 
 		release: function (instance) {
 			// do nothing
+			this.model.decommission(instance);
 			this._released = true;
 		},
 

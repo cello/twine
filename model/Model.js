@@ -85,10 +85,8 @@ define([
 
 			// resolving might be asynchronous
 			return promise.whenPromise(this.lifecycle.resolve(args), function (component) {
-				return promise.when(model.commission(component), function (component) {
-					model.emit('componentResolved', component);
-					return component;
-				});
+				model.emit('componentResolved', component);
+				return component;
 			});
 		},
 
@@ -99,7 +97,6 @@ define([
 			}
 
 			// releasing must be synchronous
-			this.decommission(instance);
 			this.lifecycle.release(instance);
 			this.emit('componentReleased', instance);
 			return instance;
