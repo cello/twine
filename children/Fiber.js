@@ -71,6 +71,8 @@ define([
 					});
 				}
 			}
+
+			return instance;
 		},
 
 		terminate: function () {
