@@ -128,8 +128,16 @@ define([
 
 					// resolve all the dependencies and then construct an instance
 					return promise.allKeys(deps).then(function (deps) {
-						var Ctor = compose(module, deps, model.mixin),
-							inst = new Ctor(args);
+						var secure = compose.secure,
+							Ctor,
+							inst;
+
+						// dojo.declare doesn't play nicely when we change the constructor
+						compose.secure = true;
+						Ctor = compose(module, deps, model.mixin);
+						compose.secure = secure;
+
+						inst = new Ctor(args);
 						model.emit('componentConstructed', inst);
 						return inst;
 					});
