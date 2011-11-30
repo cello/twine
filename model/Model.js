@@ -108,6 +108,9 @@ define([
 
 		// returns a promise to build an instance based on this model
 		construct: function (args) {
+			// compose doesn't like undefined args
+			args = args || {};
+
 			var model = this;
 
 			return this._getModule().then(function (module) {

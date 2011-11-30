@@ -3,8 +3,8 @@
 * JavaScript-style prototype inheritance and composition, multiple inheritance,
 * mixin and traits-inspired conflict resolution and composition
  */
-"use strict";
 (function(define){
+"use strict";
 define([], function(){
 	// function for creating instances from a prototype
 	function Create(){
@@ -19,6 +19,12 @@ define([], function(){
 			Create.prototype = null;
 			return instance;
 		};
+	function validArg(arg){
+		if(!arg){
+			throw new Error("Compose arguments must be functions or objects");
+		}
+		return arg;
+	}
 	// this does the work of combining mixins/prototypes
 	function mixin(instance, args, i){
 		// use prototype inheritance for first arg
@@ -42,7 +48,7 @@ define([], function(){
 				}
 			}else{
 				// it is an object, copy properties, looking for modifiers
-				for(var key in arg){
+				for(var key in validArg(arg)){
 					var value = arg[key];
 					if(typeof value == "function"){
 						if(value.install){
@@ -203,7 +209,7 @@ define([], function(){
 		var args = arguments;
 		var prototype = (args.length < 2 && typeof args[0] != "function") ?
 			args[0] : // if there is just a single argument object, just use that as the prototype
-			mixin(delegate(base), args, 1); // normally create a delegate to start with
+			mixin(delegate(validArg(base)), args, 1); // normally create a delegate to start with
 		function Constructor(){
 			var instance;
 			if(this instanceof Constructor){
@@ -239,6 +245,9 @@ define([], function(){
 		var constructors = getConstructors(arguments),
 			constructorsLength = constructors.length;
 		Constructor.extend = extend;
+		if(!Compose.secure){
+			prototype.constructor = Constructor;
+		}
 		Constructor.prototype = prototype;
 		return Constructor;
 	};
