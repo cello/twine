@@ -108,9 +108,6 @@ define([
 
 		// returns a promise to build an instance based on this model
 		construct: function (args) {
-			// compose doesn't like undefined args
-			args = args || {};
-
 			var model = this;
 
 			return this._getModule().then(function (module) {
@@ -137,14 +134,16 @@ define([
 						Ctor = compose(module, deps, model.mixin);
 						compose.secure = secure;
 
-						inst = new Ctor(args);
+						inst = args != null ? new Ctor(args) : new Ctor();
 						model.emit('componentConstructed', inst);
 						return inst;
 					});
 				}
 
 				// if the module is anything other than a function, return it as the instance
-				compose.call(module, model.mixin, args); // allow a mixin and args but no deps
+				args != null ?
+					compose.call(module, model.mixin, args) :
+					compose.call(module, model.mixin); // allow a mixin and args but no deps
 				model.emit('componentConstructed', module);
 				return module;
 			});
@@ -226,7 +225,7 @@ define([
 			// decommission is synchronous
 			var model = this;
 			arr.forEach(model._decommissions.slice(), function (decommission) {
-				decommission(inst, model);
+				decommission(inst);
 			});
 			model.emit('componentDecommissioned', inst);
 			return inst;
