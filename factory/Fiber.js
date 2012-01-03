@@ -47,7 +47,7 @@ define([
 					});
 					model.module = module;
 				}
-				return model;
+				return next(model);
 			});
 		},
 
