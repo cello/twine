@@ -116,7 +116,7 @@ define([
 					deps = {};
 
 				// if the module is a function then we resolve it as a constructor
-				if (typeof module === 'function') {
+				if (typeof module === 'function' && model.constructor !== false) {
 					registry = model.kernel.modelRegistry;
 					// get the models for all the specified dependencies
 					arr.forEach(lang.keys(specs), function (key) {
