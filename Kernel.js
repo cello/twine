@@ -65,18 +65,14 @@ define([
 			},
 
 			resolve: function (spec, args) {
-				var model = this.modelRegistry.getModel(spec);
-
-				return model.resolve(args);
+				return this.modelRegistry.getModel(spec).resolve(args);
 			},
 
 			// release an instance
 			release: function (instance) {
-				var model = this.modelRegistry.getModel({
+				return this.modelRegistry.getModel({
 					instance: instance
-				});
-
-				return model.release(instance);
+				}).release(instance);
 			},
 
 			// destroy the kernel
