@@ -30,14 +30,9 @@
 			"url": "git://github.com/cello/twine.git"
 		}
 	],
-	"dependencies": {
-		"compose": "0.1.2"
-	},
-	"mappings": {
-		"compose": "https://github.com/kriszyp/compose/zipball/v0.1.2"
-	},
 	"directories": {
 		"lib": "."
 	},
-	"main": "./Twine"
+	"main": "./Twine",
+	"dojoBuild": "twine.package.js"
 }
