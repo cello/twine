@@ -6,8 +6,8 @@ var profile = (function () {
 			amd: function (filename) {
 				return jsFile.test(filename);
 			},
-			ignore: function (filename) {
-				return !jsFile.test(filename);
+			ignore: function (filename, mid) {
+				return !jsFile.test(filename) || /\/build\//.test(mid);
 			},
 			test: function () {
 				return false;

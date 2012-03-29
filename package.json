@@ -1,7 +1,7 @@
 {
 	"name": "twine",
 	"description": "twine is a an application micro-framework for javascript.",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"keywords": ["twine", "application framework", "micro framework", "dependency inversion"],
 	"maintainers": [
 		{
