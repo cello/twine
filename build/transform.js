@@ -89,8 +89,14 @@ define([
 				deps = resource.deps;
 
 			function processDep(dep) {
+				// if any deps have been defined inline, ignore them
+				if (typeof dep !== 'string') {
+					return;
+				}
+
 				var info = bc.getSrcModuleInfo(dep, resource),
 					module = bc.resources[info.url];
+
 				if (module) {
 					deps.push(module);
 				}
