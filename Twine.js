@@ -42,7 +42,7 @@ define([
 	}
 
 	// when constructor is called, compose has already mixed in the options
-	function Twine() {
+	function Twine(args) {
 		// ensure the invariants
 		if (!this.name) {
 			// assign an arbitrary name
@@ -61,6 +61,7 @@ define([
 				// anywhere else assume AMD require
 				: require;
 		}
+		this.args = args || {} ;
 	}
 
 	var uid = 0,
@@ -95,8 +96,7 @@ define([
 				checkDestroyed(this);
 				config = config || {};
 
-				var dfd = defer(),
-					seq = [],
+				var seq = [],
 					container = this,
 					fibers = config.fibers,
 					installers = config.installers,
@@ -109,7 +109,7 @@ define([
 				if (fibers && fibers.length) {
 					// configure the fibers and add to the sequence of promises
 					seq.push(function () {
-						return when(container._configureFibers(fibers, load), function (fibers) {
+						return when(container._configure(fibers, load), function (fibers) {
 							// add each fiber to this container
 							return all(arr.map(fibers, function (fiber) {
 								return container.addFiber(fiber);
@@ -122,7 +122,7 @@ define([
 				if (installers && installers.length) {
 					// configure the installers and add them to the sequence of promises
 					seq.push(function () {
-						return when(container._configureInstallers(installers, load),
+						return when(container._configure(installers, load),
 							function (installers) {
 								// install each of the installers
 								return all(arr.map(installers, function (installer) {
@@ -149,20 +149,17 @@ define([
 				}
 
 				// fibers, installers and components need to be applied in sequence
-				promise.seq(seq).then(function () {
-					dfd.resolve(container);
-				}, dfd.reject);
-
-				// return a promise that resolves to the container
-				return dfd.promise;
+				return when(promise.seq(seq), function () {
+					return container;
+				});
 			},
 
-			// fibers can be provided in the config as:
+			// fibers and installers can be provided in the config as:
 			//  - a string, considered as a module id to be loaded and then considered again
 			//  - a function, it will be considered a factory and executed
 			//  - anything else, assumed to be an instance of a fiber
-			_configureFibers: function (fibers, load) {
-				fibers = fibers || [];
+			_configure: function (items, load) {
+				items = items || [];
 				load = load || this.load;
 
 				var dfd = defer(),
@@ -170,9 +167,9 @@ define([
 					loaded = [];
 
 				// build the list of dependencies to be loaded
-				arr.forEach(fibers, function (fiber) {
+				arr.forEach(items, function (item) {
 					// a string is a reference to a module that needs to be loaded
-					(typeof fiber === 'string' ? deps : loaded).push(fiber);
+					(typeof item === 'string' ? deps : loaded).push(item);
 				});
 
 				// if any dependencies need to be loaded
@@ -180,35 +177,6 @@ define([
 					// load the modules and then resolve the deferred
 					load(deps, function () {
 						// NOTE: this changes the order compared to the config
-						dfd.resolve(normalizeConfigItems(loaded.concat(slice.call(arguments))));
-					});
-				}
-				else {
-					dfd.resolve(normalizeConfigItems(loaded));
-				}
-
-				return dfd.promise;
-			},
-
-			// installers can be provided in the same way as fibers
-			_configureInstallers: function (installers, load) {
-				installers = installers || [];
-				load = load || this.load;
-
-				var dfd = defer(),
-					deps = [],
-					loaded = [];
-
-				// build the list of dependencies to be loaded
-				arr.forEach(installers, function (installer) {
-					// a string is a reference to a module that needs to be loaded
-					(typeof installer === 'string' ? deps : loaded).push(installer);
-				});
-
-				// if any dependencies need to be loaded
-				if (deps.length) {
-					// load the modules and then resolve the deferred
-					load(deps, function () {
 						dfd.resolve(normalizeConfigItems(loaded.concat(slice.call(arguments))));
 					});
 				}
