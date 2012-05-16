@@ -42,7 +42,7 @@ define([
 	}
 
 	// when constructor is called, compose has already mixed in the options
-	function Twine(args) {
+	function Twine() {
 		// ensure the invariants
 		if (!this.name) {
 			// assign an arbitrary name
@@ -61,7 +61,6 @@ define([
 				// anywhere else assume AMD require
 				: require;
 		}
-		this.args = args || {} ;
 	}
 
 	var uid = 0,
